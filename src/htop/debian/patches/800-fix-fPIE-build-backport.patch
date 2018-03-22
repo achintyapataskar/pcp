@@ -1,0 +1,38 @@
+Description: Fix the -fPIE build related segfault on displaying the panels
+ after setting CPU affinity
+Source: https://github.com/hishamhm/htop/commit/6cc0a8c82006fbe418ae1189586ab3974758f028.patch
+From: Hisham <hisham@gobolinux.org>
+Date: Wed, 25 May 2016 16:46:47 -0300
+Subject: [PATCH] Make sure a pointer fits in the argument!
+
+---
+ MainPanel.c | 2 +-
+ MainPanel.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MainPanel.c b/MainPanel.c
+index ed7f3ad..708a077 100644
+--- a/MainPanel.c
++++ b/MainPanel.c
+@@ -162,7 +162,7 @@ const char* MainPanel_getValue(MainPanel* this, int i) {
+    return "";
+ }
+
+-bool MainPanel_foreachProcess(MainPanel* this, MainPanel_ForeachProcessFn fn, int arg, bool* wasAnyTagged) {
++bool MainPanel_foreachProcess(MainPanel* this, MainPanel_ForeachProcessFn fn, size_t arg, bool* wasAnyTagged) {
+    Panel* super = (Panel*) this;
+    bool ok = true;
+    bool anyTagged = false;
+diff --git a/MainPanel.h b/MainPanel.h
+index 83253d6..f4671f3 100644
+--- a/MainPanel.h
++++ b/MainPanel.h
+@@ -34,7 +34,7 @@ int MainPanel_selectedPid(MainPanel* this);
+
+ const char* MainPanel_getValue(MainPanel* this, int i);
+
+-bool MainPanel_foreachProcess(MainPanel* this, MainPanel_ForeachProcessFn fn, int arg, bool* wasAnyTagged);
++bool MainPanel_foreachProcess(MainPanel* this, MainPanel_ForeachProcessFn fn, size_t arg, bool* wasAnyTagged);
+
+ extern PanelClass MainPanel_class;
+
